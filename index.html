@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Bil Elektrik TNB Online & Anggaran Rumah Percuma</title>
+    <meta name="description" content="Kira dan anggarkan bil elektrik bulanan rumah anda berdasarkan kadar tarif domestik terkini Tenaga Nasional Berhad (TNB) secara mudah dan pantas.">
+    <link rel="canonical" href="https://kalkulator-tnb.vercel.app/" />
+    
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0b1329;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --brand-blue: #38bdf8;
+            --brand-emerald: #34d399;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin: 24px 0;
+            max-width: 500px;
+        }
+
+        header h1 {
+            color: var(--brand-blue);
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        main {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--brand-blue);
+            cursor: pointer;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 4px;
+        }
+
+        .value-display {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--brand-blue);
+            text-align: center;
+            width: 100%;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--brand-blue);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.875rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 14px 0 rgba(56, 189, 248, 0.3);
+        }
+
+        button:hover {
+            background-color: #0ea5e9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .ad-space {
+            margin: 24px 0;
+            padding: 16px;
+            background-color: var(--bg-input);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #475569;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        #results {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--brand-blue);
+            margin-bottom: 12px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #33415540;
+            font-size: 0.875rem;
+        }
+
+        .result-row span:first-child {
+            color: var(--text-muted);
+        }
+
+        .result-row span:last-child {
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+        }
+
+        .total-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .total-value {
+            font-family: monospace;
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: var(--brand-emerald);
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+        }
+
+        .disclaimer-box {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px dashed #33415560;
+            font-size: 0.65rem;
+            color: #64748b;
+            line-height: 1.4;
+            text-align: justify;
+        }
+
+        .seo-section {
+            max-width: 500px;
+            width: 100%;
+            margin: 32px 0;
+            background-color: #1e293b66;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #33415540;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .seo-section h2 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .seo-section p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        footer {
+            width: 100%;
+            background-color: var(--bg-input);
+            padding: 10px;
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #475569;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 0;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Kalkulator Bil Elektrik TNB</h1>
+        <p>Anggarkan jumlah bil elektrik kediaman anda mengikut blok tarif domestik terkini secara pantas.</p>
+    </header>
+
+    <main>
+        <div class="form-group">
+            <label for="kwhUsage">Penggunaan Elektrik Bulanan (kWh)</label>
+            <div class="slider-container">
+                <div id="kwhDisplay" class="value-display">350 kWh</div>
+                <input type="range" id="kwhUsage" min="0" max="2000" value="350" oninput="updateSliderDisplay(this.value)">
+            </div>
+        </div>
+
+        <button onclick="calculateBill()">Kira Anggaran Bil</button>
+
+        <div class="ad-space">
+            Ruang Iklan Banner Pengiklanan
+        </div>
+
+        <div id="results">
+            <div class="result-title">Pecahan Blok Tarif:</div>
+            <div class="result-row">
+                <span>200 kWh Pertama (RM 0.218):</span>
+                <span id="tier1" style="color: white;">RM 0.00</span>
+            </div>
+            <div class="result-row">
+                <span>100 kWh Kedua (RM 0.334):</span>
+                <span id="tier2" style="color: white;">RM 0.00</span>
+            </div>
+            <div class="result-row">
+                <span>300 kWh Ketiga (RM 0.516):</span>
+                <span id="tier3" style="color: white;">RM 0.00</span>
+            </div>
+            <div class="result-row">
+                <span>Baki Seterusnya:</span>
+                <span id="tier4" style="color: white;">RM 0.00</span>
+            </div>
+            <div class="total-row">
+                <span class="total-label">Anggaran Jumlah Bil:</span>
+                <span id="totalBill" class="total-value">RM 0.00</span>
+            </div>
+
+            <div class="disclaimer-box">
+                <strong>Penafian (Disclaimer):</strong> Alat simulasi ini dibina sebagai rujukan pengiraan anggaran kegunaan domestik sahaja. Jumlah pengiraan sebenar mungkin berbeza tertakluk kepada pelarasan surcaj bulanan (ICPT) oleh Suruhanjaya Tenaga dan rebat semasa Tenaga Nasional Berhad (TNB). Pemilik laman web tidak memegang sebarang liabiliti undang-undang atau ralat kewangan daripada rujukan simulasi ini. AI responses may include mistakes.
+            </div>
+        </div>
+    </main>
+
+    <section class="seo-section">
+        <h2>Mengenai Semakan & Pengiraan Bil Elektrik Rumah</h2>
+        <p><strong>Bagaimana bil TNB dikira?</strong> Pengiraan menggunakan kaedah tarif berblok progresif di Malaysia di mana semakin tinggi jumlah penggunaan unit elektrik (kWh) anda, semakin tinggi blok kadar caj yang akan dikenakan.</p>
+        <p><strong>Adakah pengiraan ini tepat?</strong> Kalkulator ini menyediakan nilai anggaran terdekat berasaskan struktur tarif rasmi domestik terkini untuk kegunaan pengurusan kewangan rumah anda.</p>
+    </section>
+
+    <footer>
+        Zon Banner Sauh Sematan (Sticky Ad Block)
+    </footer>
+
+    <script>
+        function updateSliderDisplay(val) {
+            document.getElementById('kwhDisplay').innerText = val + " kWh";
+        }
+
+        function calculateBill() {
+            const kwh = parseFloat(document.getElementById('kwhUsage').value) || 0;
+            let remaining = kwh;
+            let bill = 0;
+            
+            let t1 = 0, t2 = 0, t3 = 0, t4 = 0;
+
+            if (remaining > 200) { t1 = 200 * 0.218; remaining -= 200; }
+            else { t1 = remaining * 0.218; remaining = 0; }
+
+            if (remaining > 100) { t2 = 100 * 0.334; remaining -= 100; }
+            else { t2 = remaining * 0.334; remaining = 0; }
+
+            if (remaining > 300) { t3 = 300 * 0.516; remaining -= 300; }
+            else { t3 = remaining * 0.516; remaining = 0; }
+
+            if (remaining > 0) {
+                if (kwh > 900) { t4 = remaining * 0.571; } 
+                else { t4 = remaining * 0.546; }
+            }
+
+            bill = t1 + t2 + t3 + t4;
+
+            document.getElementById('tier1').innerText = "RM " + t1.toFixed(2);
+            document.getElementById('tier2').innerText = "RM " + t2.toFixed(2);
+            document.getElementById('tier3').innerText = "RM " + t3.toFixed(2);
+            document.getElementById('tier4').innerText = "RM " + t4.toFixed(2);
+            document.getElementById('totalBill').innerText = "RM " + bill.toFixed(2);
+            
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
